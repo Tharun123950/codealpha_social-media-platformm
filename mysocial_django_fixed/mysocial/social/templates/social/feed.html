@@ -1,0 +1,29 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<h2>Feed</h2>
+<form method="post" enctype="multipart/form-data" class="card">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Post</button>
+</form>
+<hr>
+{% for p in posts %}
+    <div class="card">
+        <div class="card-header">
+            <a href="{% url 'profile' p.author.username %}">@{{ p.author.username }}</a>
+            <span class="muted">{{ p.created_at }}</span>
+        </div>
+        <p>{{ p.content }}</p>
+        {% if p.image %}
+            <img src="{{ p.image.url }}" class="post-img">
+        {% endif %}
+        <div class="actions">
+            <a href="{% url 'post_detail' p.id %}">Comments ({{ p.comments.count }})</a>
+            <span>Likes: {{ p.like_count }}</span>
+        </div>
+    </div>
+{% empty %}
+    <p>No posts yet. Follow someone or create the first one!</p>
+{% endfor %}
+{% endblock %}
